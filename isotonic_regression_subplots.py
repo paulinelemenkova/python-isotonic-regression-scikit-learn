@@ -1,27 +1,38 @@
-print(__doc__)
-import os
-import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from matplotlib.collections import LineCollection
-import matplotlib.artist as martist
-from matplotlib.offsetbox import AnchoredText
+#!/usr/bin/env python
+"""Isotonic Regression with Python and scikit-learn
+
+Author:  Polina Lemenkova
+ORCID:   https://orcid.org/0000-0002-5759-1089
+Archive: https://doi.org/10.13140/RG.2.2.25900.51842
+License: MIT
+
+See README.md for details.
+"""
+from sklearn.utils import check_random_state
 from sklearn.linear_model import LinearRegression
 from sklearn.isotonic import IsotonicRegression
-from sklearn.utils import check_random_state
+from matplotlib.offsetbox import AnchoredText
+from matplotlib.collections import LineCollection
+import seaborn as sns
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.artist as martist
+import os
+print(__doc__)
+
 
 sns.set_style('darkgrid')
 sns.set_context("paper")
 
-os.chdir('/Users/pauline/Documents/Python')
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 df = pd.read_csv("Tab-Morph.csv")
 
 n = 25
-x = df.profile # x is the same for both subplots 1 and 2
+x = df.profile  # x is the same for both subplots 1 and 2
 rs = check_random_state(0)
-y1 = df.sedim_thick + 80. * np.log1p(x) # y for subplot 1
-y2 = df.Min + 3. * np.log1p(x) # y for subplot 2
+y1 = df.sedim_thick + 80. * np.log1p(x)  # y for subplot 1
+y2 = df.Min + 3. * np.log1p(x)  # y for subplot 2
 
 # Fit IsotonicRegression and LinearRegression model for subplot 1
 ir1 = IsotonicRegression()
@@ -51,11 +62,13 @@ fig = plt.figure(figsize=(8.8, 4.0), dpi=300)
 fig.suptitle('Isotonic regression plot, Mariana Trench, 25 profiles',
              fontweight='bold', fontsize=12, x=0.5, y=0.99)
 
+
 def add_at(ax, t, loc=2):
     fp = dict(size=11)
     _at = AnchoredText(t, loc=loc, prop=fp)
     ax.add_artist(_at)
     return _at
+
 
 # subplot 1
 ax = fig.add_subplot(121)
@@ -71,8 +84,8 @@ add_at(ax, "A")
 
 # subplot 2
 ax = fig.add_subplot(122)
-plt.plot(x, y2, '.', c = '#5654a2', markersize=18, alpha=.5)
-plt.plot(x, y2_, '.-', c = '#b44c97', markersize=12, alpha=.5)
+plt.plot(x, y2, '.', c='#5654a2', markersize=18, alpha=.5)
+plt.plot(x, y2_, '.-', c='#b44c97', markersize=12, alpha=.5)
 plt.plot(x, lr2.predict(x[:, np.newaxis]), 'b-', linewidth=.5)
 plt.gca().add_collection(lc2)
 plt.legend(('Bathymetric Data', 'Isotonic Fit', 'Linear Fit'), loc='lower left')
